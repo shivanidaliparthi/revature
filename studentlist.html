@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management</title>
+  <style>
+    .fail { color: red; font-weight: bold; }
+    table, th, td { border: 1px solid #000; border-collapse: collapse; padding: 6px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h3>All Students</h3>
+<ul id="all"></ul>
+
+<h3>Students with Marks > 60</h3>
+<ul id="passed"></ul>
+
+<h3>CSE Students</h3>
+<ul id="cse"></ul>
+
+<h3>Department Count</h3>
+<ul id="dept"></ul>
+
+<h3>Top Scorer</h3>
+<p id="top"></p>
+
+<h3>Average Marks</h3>
+<p id="avg"></p>
+
+<h3>Students Table (Sorted by Marks DESC)</h3>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Marks</th>
+    <th>Department</th>
+  </tr>
+</table>
+
+<button onclick="addStudent()">Add Student</button>
+
+<script>
+const students = [
+  { id: 1, name: "jaya", marks: 78, department: "CSE" },
+  { id: 2, name: "Priya", marks: 92, department: "ECE" },
+  { id: 3, name: "Ravi", marks: 45, department: "MECH" },
+  { id: 4, name: "Siri", marks: 66, department: "CSE" },
+  { id: 5, name: "pravallika", marks: 88, department: "ECE" },
+  { id: 6, name: "Vikram", marks: 53, department: "CIVIL" },
+  { id: 7, name: "mounika", marks: 34, department: "MECH" },
+  { id: 8, name: "sai", marks: 81, department: "CSE" },
+  { id: 9, name: "Neha", marks: 47, department: "CIVIL" },
+  { id: 10, name: "Suresh", marks: 73, department: "ECE" },
+  { id: 11, name: "teja", marks: 82, department: "CSE" },
+  { id: 12, name: "shivani", marks: 90, department: "IT" },
+  { id: 13, name: "viyan", marks: 34, department: "MECH" },
+  { id: 14, name: "vishnu", marks: 68, department: "ECE" },
+  { id: 15, name: "bharat", marks: 76, department: "CSE" }
+];
+
+const all = document.getElementById("all");
+const passed = document.getElementById("passed");
+const cse = document.getElementById("cse");
+const dept = document.getElementById("dept");
+const topStudent = document.getElementById("top"); // renamed to avoid conflict
+const avg = document.getElementById("avg");
+const table = document.querySelector("table");
+
+// 1️⃣ Display all students
+students.forEach(s => {
+  let li = document.createElement("li");
+  li.textContent = s.name;
+  if (s.marks < 50) li.className = "fail";
+  all.appendChild(li);
+});
+
+// 2️⃣ Marks > 60
+students.filter(s => s.marks > 60)
+  .forEach(s => {
+    let li = document.createElement("li");
+    li.textContent = `${s.name} - ${s.marks}`;
+    passed.appendChild(li);
+  });
+
+// 3️⃣ CSE students
+students.filter(s => s.department === "CSE")
+  .forEach(s => {
+    let li = document.createElement("li");
+    li.textContent = s.name;
+    cse.appendChild(li);
+  });
+
+// 4️⃣ Department count
+let deptCount = {};
+students.forEach(s => {
+  deptCount[s.department] = (deptCount[s.department] || 0) + 1;
+});
+for (let d in deptCount) {
+  let li = document.createElement("li");
+  li.textContent = `${d} : ${deptCount[d]}`;
+  dept.appendChild(li);
+}
+
+// 5️⃣ Highest marks
+let topper = students.reduce((a, b) => a.marks > b.marks ? a : b);
+topStudent.textContent = `${topper.name} (${topper.marks})`;
+
+// 6️⃣ Average marks
+let average = students.reduce((sum, s) => sum + s.marks, 0) / students.length;
+avg.textContent = average.toFixed(2);
+
+// 7️⃣ Table sorted by marks DESC
+students.slice().sort((a, b) => b.marks - a.marks)
+  .forEach(s => {
+    let row = document.createElement("tr");
+    if (s.marks < 50) row.className = "fail";
+    row.innerHTML =
+      `<td>${s.name}</td>
+       <td>${s.marks}</td>
+       <td>${s.department}</td>`;
+    table.appendChild(row);
+  });
+
+// 8️⃣ Add student dynamically
+function addStudent() {
+  const newStudent = {
+    id: students.length + 1,
+    name: "New Student",
+    marks: 48,
+    department: "CSE"
+  };
+
+  students.push(newStudent);
+
+  // update only ALL students list dynamically
+  let li = document.createElement("li");
+  li.textContent = newStudent.name;
+  li.className = "fail";
+  all.appendChild(li);
+
+  alert("Student added.\nOther sections need manual refresh.");
+}
+</script>
+
+</body>
+</html>
