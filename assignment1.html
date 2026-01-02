@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <meta  charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Space Launch Information Dashboard  version 1 </title>
+       
+    </head>
+    <body>
+
+    <h2> space launch info </h2>
+    <button onclick="loadLaunch()"> load latest launch</button>
+    <div id="loading" style="display:none;">Loading latest launch...</div>
+    <ul id="launch-list"></ul>
+    <script>
+        function loadLaunch() {
+             const loadingDiv = document.getElementById('loading');
+              loadingDiv.style.display = 'block';
+            fetch('https://api.spacexdata.com/v4/launches/latest')
+            .then(function sucess(response){
+                return response.json();
+            })
+
+            .then(function( loadinfo){
+                  const list = document.getElementById('launch-list');
+                 
+                  loadingDiv.style.display = 'none';
+                     list.innerHTML = '';
+                  const li = document.createElement('li');
+                        li.textContent = `Mission: ${loadinfo.name}`;
+                         list.appendChild(li);
+
+            })
+
+            .catch(function error(error){
+               console.log('Error fetching users:', error);
+              
+            
+            });            
+    }
+    </script>
+    </body>
+    </html>
+  
